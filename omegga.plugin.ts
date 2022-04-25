@@ -37,7 +37,7 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
         let time = await getTime();
         if(time >= 18.00 || time <= 6.00){
           if(time >= 12.00){
-            Omegga.whisper('orion', ((time - 12.00) * -1).toString());
+            Omegga.whisper('orion', ((time - 24.00)).toString());
           }
           Omegga.loadEnvironmentData({data:{groups:{Ambience:{selectedAmbienceTypeInt:4}}}})
         } else {
