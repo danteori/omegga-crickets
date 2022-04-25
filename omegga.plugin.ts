@@ -17,7 +17,7 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
   async init() {
 
     let crickets:boolean = false;
-    let tickrate:number = 4000;
+    let tickrate:number = 1000;
     // Write your plugin!
     this.omegga.on('cmd:crickets', async (speaker: string) => {
       if(Omegga.findPlayerByName(speaker).isHost()){
