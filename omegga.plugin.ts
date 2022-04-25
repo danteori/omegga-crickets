@@ -15,10 +15,13 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
   }
 
   async init() {
+
+    let crickets:boolean = false;
     // Write your plugin!
     this.omegga.on('cmd:crickets', async (speaker: string) => {
       if(Omegga.findPlayerByName(speaker).isHost()){
-        Omegga.middlePrint(speaker, (await cricketTick()).toString());
+        Omegga.whisper(speaker, (await cricketTick()).toString());
+        Omegga.whisper(speaker, (await getTime()).toString());
       }
     });
 
@@ -27,7 +30,12 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
       return data.data.groups.Ambience.selectedAmbienceTypeInt;
     }
 
-    return { registeredCommands: ['test'] };
+    const getTime = async () => {
+      let data = await Omegga.getEnvironmentData()
+      return data.data.groups.Sky.timeOfDay;
+    }
+
+    return { registeredCommands: ['crickets'] }; //crickets is 4
   }
 
   async stop() {
