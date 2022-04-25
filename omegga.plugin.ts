@@ -17,17 +17,33 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
   async init() {
 
     let crickets:boolean = false;
+    let tickrate:number = 4000;
     // Write your plugin!
     this.omegga.on('cmd:crickets', async (speaker: string) => {
       if(Omegga.findPlayerByName(speaker).isHost()){
-        Omegga.whisper(speaker, (await cricketTick()).toString());
-        Omegga.whisper(speaker, (await getTime()).toString());
+        if(crickets){
+          crickets = false;
+          Omegga.whisper(speaker, "Cricket listener has been disabled.");
+        } else {
+          crickets = true;
+          cricketTick();
+          Omegga.whisper(speaker, "Cricket listener has been enabled.");
+        }
       }
     });
 
     const cricketTick = async () => {
-      let data = await Omegga.getEnvironmentData()
-      return data.data.groups.Ambience.selectedAmbienceTypeInt;
+      if(crickets){
+        let time = await getTime();
+        if(time >= 18.00 || time <= 6.00){
+          Omegga.loadEnvironmentData({data:{groups:{Ambience:{selectedAmbienceTypeInt:4}}}})
+        } else {
+          Omegga.loadEnvironmentData({data:{groups:{Ambience:{selectedAmbienceTypeInt:0}}}})
+        }
+        setTimeout(async () => {await cricketTick();}, tickrate); 
+      }
+      
+      
     }
 
     const getTime = async () => {
